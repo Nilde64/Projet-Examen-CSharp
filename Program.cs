@@ -312,7 +312,7 @@ namespace GestionClasse
 
             PauseRetourMenu();
         }
-
+        
         static void AfficherStatistiques()
         {
             Console.Clear();
