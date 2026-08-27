@@ -1,0 +1,2 @@
+=== LISTE DES ADMIS ===
+Matricule: 2324 | Nom: dyrany | Prénom: nilde | Note: 13,00/20 | Mention: Assez bien
