@@ -5,15 +5,12 @@ using System.Linq;
 
 namespace GestionClasse
 {
-    // ==========================================
-    // 1. DÉFINITION DE LA CLASSE ETUDIANT
-    // ==========================================
     public class Etudiant
     {
         public string Nom { get; set; }
         public string Prenom { get; set; }
         public string Matricule { get; set; }
-        public double? Note { get; set; } // Note non renseignée (null) par défaut
+        public double? Note { get; set; }
 
         public Etudiant(string nom, string prenom, string matricule)
         {
@@ -23,7 +20,6 @@ namespace GestionClasse
             Note = null;
         }
 
-        // Calcule la mention selon la grille du sujet
         public string ObtenirMention()
         {
             if (!Note.HasValue) return "Non noté";
@@ -39,13 +35,10 @@ namespace GestionClasse
         public override string ToString()
         {
             string noteAffichage = Note.HasValue ? $"{Note.Value:F2}/20" : "Non renseignée";
-            return $"Matricule: {Matricule} | Nom: {Nom} | Prénom: {Prenom} | Note: {noteAffichage} | Mention: {ObtenirMention()}";
+            return $"Matricule: {Matricule,-10} | Nom: {Nom,-12} | Prénom: {Prenom,-12} | Note: {noteAffichage,-14} | Mention: {ObtenirMention()}";
         }
     }
 
-    // ==========================================
-    // BONUS : CLASSE POUR GÉRER UNE CLASSE (ex: 3A, L1)
-    // ==========================================
     public class Classe
     {
         public string NomClasse { get; set; }
@@ -58,20 +51,15 @@ namespace GestionClasse
         }
     }
 
-    // ==========================================
-    // 2. PROGRAMME PRINCIPAL
-    // ==========================================
     class Program
     {
-        // Liste globale des classes
         static List<Classe> listeClasses = new List<Classe>();
         static Classe classeActive = null;
 
         static void Main(string[] args)
         {
-            // Initialisation par défaut avec une première classe si aucune n'existe
             Console.Clear();
-            Console.WriteLine("=== INITIALISATION DU SYSTÈME ===");
+            AfficherEnteteDecoratif("INITIALISATION DU SYSTÈME");
             Console.Write("Entrez le nom de la première classe à gérer (ex: L1, 3A, L2): ");
             string nomInit = Console.ReadLine()?.Trim();
             if (string.IsNullOrWhiteSpace(nomInit)) nomInit = "L1";
@@ -85,23 +73,27 @@ namespace GestionClasse
             while (continuer)
             {
                 Console.Clear();
-                Console.WriteLine($"=== GESTION DE CLASSE - Classe active : [{classeActive.NomClasse}] ===");
-                Console.WriteLine("1. Saisir les étudiants");
-                Console.WriteLine("2. Saisir / Modifier les notes");
-                Console.WriteLine("3. Afficher la liste complète");
-                Console.WriteLine("4. Afficher les étudiants admis");
-                Console.WriteLine("5. Afficher les étudiants à rattraper");
-                Console.WriteLine("6. Rechercher un étudiant");
-                Console.WriteLine("7. Afficher les statistiques de la classe (Moyenne + Médiane)");
-                Console.WriteLine("8. Trier les étudiants (par nom ou par note)");
-                Console.WriteLine("9. Supprimer un étudiant");
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                Console.WriteLine("===================================================================");
+                Console.WriteLine($"         GESTION DE CLASSE  |  Classe active : [{classeActive.NomClasse}]");
+                Console.WriteLine("===================================================================");
+                Console.ResetColor();
+                Console.WriteLine(" 1. Saisir les étudiants");
+                Console.WriteLine(" 2. Saisir / Modifier les notes");
+                Console.WriteLine(" 3. Afficher la liste complète");
+                Console.WriteLine(" 4. Afficher les étudiants admis");
+                Console.WriteLine(" 5. Afficher les étudiants à rattraper");
+                Console.WriteLine(" 6. Rechercher un étudiant");
+                Console.WriteLine(" 7. Afficher les statistiques (Moyenne + Médiane)");
+                Console.WriteLine(" 8. Trier les étudiants (par nom ou par note)");
+                Console.WriteLine(" 9. Supprimer un étudiant");
                 Console.WriteLine("10. Exporter la liste des admis (Fichier .txt)");
-                Console.WriteLine("11. Gérer / Changer de classe (Gestion multi-classes)");
+                Console.WriteLine("11. Gérer / Changer de classe");
                 Console.WriteLine("12. Quitter");
-                Console.Write("\nChoisissez une option: ");
+                Console.WriteLine("===================================================================");
+                Console.Write("Choisissez une option (1-12): ");
 
                 string choix = Console.ReadLine();
-                Console.WriteLine();
 
                 switch (choix)
                 {
@@ -117,25 +109,49 @@ namespace GestionClasse
                     case "10": ExporterAdmis(); break;
                     case "11": GererClasses(); break;
                     case "12":
+                        Console.Clear();
+                        AfficherEnteteDecoratif("FIN DU PROGRAMME");
+                        Console.WriteLine("Au revoir ! Le programme s'est terminé proprement.\n");
                         continuer = false;
-                        Console.WriteLine("Au revoir ! Programme terminé proprement.");
                         break;
                     default:
-                        Console.WriteLine("Choix invalide. Appuyez sur une touche pour réessayer.");
+                        Console.WriteLine("\n[!] Choix invalide.");
+                        PauseRetourMenu();
                         break;
-                }
-
-                if (continuer)
-                {
-                    Console.WriteLine("\nAppuyez sur une touche pour revenir au menu principal...");
-                    Console.ReadKey();
                 }
             }
         }
 
-        // 1. Saisir les étudiants
+        // --- DECORATION ET NAVIGATION ---
+
+        static void AfficherEnteteDecoratif(string titre)
+        {
+            // Remplacé ConsoleColor.Yellow par ConsoleColor.Magenta (Rose)
+            Console.ForegroundColor = ConsoleColor.Magenta;
+            Console.WriteLine("===================================================================");
+            Console.WriteLine($"                     {titre.ToUpper()}");
+            Console.WriteLine("===================================================================");
+            Console.ResetColor();
+            Console.WriteLine();
+        }
+
+        static void PauseRetourMenu()
+        {
+            Console.ForegroundColor = ConsoleColor.DarkGray;
+            Console.WriteLine("\n-------------------------------------------------------------------");
+            Console.WriteLine(" Appuyez sur n'importe quelle touche pour revenir au menu... ");
+            Console.WriteLine("-------------------------------------------------------------------");
+            Console.ResetColor();
+            Console.ReadKey(true);
+        }
+
+        // --- FONCTIONNALITÉS ---
+
         static void SaisirEtudiants()
         {
+            Console.Clear();
+            AfficherEnteteDecoratif("1. SAISIR LES ÉTUDIANTS");
+
             int nombre = SaisirEntierPositif("Combien d'étudiants souhaitez-vous ajouter ? ");
 
             for (int i = 0; i < nombre; i++)
@@ -155,11 +171,11 @@ namespace GestionClasse
 
                     if (string.IsNullOrWhiteSpace(matricule))
                     {
-                        Console.WriteLine("Le matricule ne peut pas être vide.");
+                        Console.WriteLine("[!] Le matricule ne peut pas être vide.");
                     }
                     else if (ExisteMatriculeDansToutesLesClasses(matricule))
                     {
-                        Console.WriteLine("Ce matricule existe déjà dans une classe. Veuillez en entrer un unique.");
+                        Console.WriteLine("[!] Ce matricule existe déjà dans le système.");
                     }
                     else
                     {
@@ -168,14 +184,18 @@ namespace GestionClasse
                 }
 
                 classeActive.Etudiants.Add(new Etudiant(nom, prenom, matricule));
-                Console.WriteLine("Étudiant ajouté avec succès.");
+                Console.WriteLine($"[✓] Étudiant {prenom} {nom} ajouté avec succès.");
             }
+
+            PauseRetourMenu();
         }
 
-        // 2. Saisir / Modifier les notes
         static void SaisirModifierNote()
         {
-            if (VérifierClasseVide()) return;
+            Console.Clear();
+            AfficherEnteteDecoratif("2. SAISIR / MODIFIER LES NOTES");
+
+            if (VérifierClasseVide()) { PauseRetourMenu(); return; }
 
             Console.Write("Entrez le nom ou le matricule de l'étudiant à noter: ");
             string recherche = Console.ReadLine()?.Trim();
@@ -184,11 +204,12 @@ namespace GestionClasse
 
             if (etudiant == null)
             {
-                Console.WriteLine("Étudiant non trouvé dans la classe active.");
+                Console.WriteLine("[!] Étudiant non trouvé dans la classe active.");
+                PauseRetourMenu();
                 return;
             }
 
-            Console.WriteLine($"Étudiant trouvé : {etudiant.Prenom} {etudiant.Nom} ({etudiant.Matricule})");
+            Console.WriteLine($"\nÉtudiant trouvé : {etudiant.Prenom} {etudiant.Nom} ({etudiant.Matricule})");
 
             double note;
             while (true)
@@ -197,65 +218,80 @@ namespace GestionClasse
                 if (double.TryParse(Console.ReadLine(), out note) && note >= 0 && note <= 20)
                 {
                     etudiant.Note = note;
-                    Console.WriteLine("Note enregistrée avec succès !");
+                    Console.WriteLine("[✓] Note enregistrée avec succès !");
                     break;
                 }
-                Console.WriteLine("Erreur: La note doit être un nombre valide compris entre 0 et 20.");
+                Console.WriteLine("[!] Erreur: La note doit être un nombre valide entre 0 et 20.");
             }
+
+            PauseRetourMenu();
         }
 
-        // 3. Afficher la liste complète
         static void AfficherListeComplete()
         {
-            if (VérifierClasseVide()) return;
+            Console.Clear();
+            AfficherEnteteDecoratif($"3. LISTE COMPLÈTE - CLASSE [{classeActive.NomClasse}]");
 
-            Console.WriteLine($"--- LISTE COMPLÈTE - CLASSE [{classeActive.NomClasse}] ---");
+            if (VérifierClasseVide()) { PauseRetourMenu(); return; }
+
             foreach (var e in classeActive.Etudiants)
             {
                 Console.WriteLine(e);
             }
+
+            PauseRetourMenu();
         }
 
-        // 4. Afficher les étudiants admis
         static void AfficherAdmis()
         {
-            if (VérifierClasseVide()) return;
+            Console.Clear();
+            AfficherEnteteDecoratif($"4. ÉTUDIANTS ADMIS - CLASSE [{classeActive.NomClasse}]");
+
+            if (VérifierClasseVide()) { PauseRetourMenu(); return; }
 
             var admis = classeActive.Etudiants.Where(e => e.Note.HasValue && e.Note.Value >= 10).ToList();
 
-            Console.WriteLine($"--- ÉTUDIANTS ADMIS - CLASSE [{classeActive.NomClasse}] (Total: {admis.Count}) ---");
+            Console.WriteLine($"Nombre total d'admis : {admis.Count}\n");
             if (admis.Count == 0)
             {
-                Console.WriteLine("Aucun étudiant admis.");
+                Console.WriteLine("Aucun étudiant n'est admis pour le moment.");
             }
             else
             {
                 foreach (var e in admis) Console.WriteLine(e);
             }
+
+            PauseRetourMenu();
         }
 
-        // 5. Afficher les étudiants à rattraper
         static void AfficherRattrapage()
         {
-            if (VérifierClasseVide()) return;
+            Console.Clear();
+            AfficherEnteteDecoratif($"5. ÉTUDIANTS À RATTRAPER - CLASSE [{classeActive.NomClasse}]");
+
+            if (VérifierClasseVide()) { PauseRetourMenu(); return; }
 
             var rattrapage = classeActive.Etudiants.Where(e => e.Note.HasValue && e.Note.Value < 10).ToList();
 
-            Console.WriteLine($"--- ÉTUDIANTS À RATTRAPER - CLASSE [{classeActive.NomClasse}] (Total: {rattrapage.Count}) ---");
+            Console.WriteLine($"Nombre total à rattraper : {rattrapage.Count}\n");
             if (rattrapage.Count == 0)
             {
-                Console.WriteLine("Aucun étudiant à rattraper.");
+                Console.WriteLine("Aucun étudiant en rattrapage.");
             }
             else
             {
                 foreach (var e in rattrapage) Console.WriteLine(e);
             }
+
+            PauseRetourMenu();
         }
 
-        // 6. Rechercher un étudiant
         static void RechercherEtudiant()
         {
-            if (VérifierClasseVide()) return;
+            Console.Clear();
+            AfficherEnteteDecoratif("6. RECHERCHER UN ÉTUDIANT");
+
+            if (VérifierClasseVide()) { PauseRetourMenu(); return; }
 
             Console.Write("Entrez le nom ou le matricule recherché: ");
             string recherche = Console.ReadLine()?.Trim();
@@ -263,34 +299,39 @@ namespace GestionClasse
             var resultats = classeActive.Etudiants.Where(e => e.Matricule.Equals(recherche, StringComparison.OrdinalIgnoreCase) ||
                                                              e.Nom.Equals(recherche, StringComparison.OrdinalIgnoreCase)).ToList();
 
+            Console.WriteLine();
             if (resultats.Count == 0)
             {
-                Console.WriteLine("Aucun étudiant trouvé.");
+                Console.WriteLine("[!] Aucun étudiant trouvé.");
             }
             else
             {
+                Console.WriteLine($"Résultat(s) trouvé(s) ({resultats.Count}) :");
                 foreach (var e in resultats) Console.WriteLine(e);
             }
+
+            PauseRetourMenu();
         }
 
-        // 7. Afficher les statistiques de la classe (Moyenne + Médiane)
         static void AfficherStatistiques()
         {
-            if (VérifierClasseVide()) return;
+            Console.Clear();
+            AfficherEnteteDecoratif($"7. STATISTIQUES - CLASSE [{classeActive.NomClasse}]");
+
+            if (VérifierClasseVide()) { PauseRetourMenu(); return; }
 
             var etudiantsNotes = classeActive.Etudiants.Where(e => e.Note.HasValue).ToList();
             if (etudiantsNotes.Count == 0)
             {
                 Console.WriteLine("Aucune note n'a été saisie pour le moment.");
+                PauseRetourMenu();
                 return;
             }
 
             double moyenne = etudiantsNotes.Average(e => e.Note.Value);
             double maxNote = etudiantsNotes.Max(e => e.Note.Value);
             double minNote = etudiantsNotes.Min(e => e.Note.Value);
-
-            // BONUS : Calcul de la médiane
-            double médiane = CalculerMediane(etudiantsNotes.Select(e => e.Note.Value).ToList());
+            double mediane = CalculerMediane(etudiantsNotes.Select(e => e.Note.Value).ToList());
 
             var meilleurs = etudiantsNotes.Where(e => e.Note.Value == maxNote).Select(e => $"{e.Prenom} {e.Nom}");
             var moinsBons = etudiantsNotes.Where(e => e.Note.Value == minNote).Select(e => $"{e.Prenom} {e.Nom}");
@@ -298,46 +339,54 @@ namespace GestionClasse
             int admisCount = etudiantsNotes.Count(e => e.Note.Value >= 10);
             double tauxReussite = ((double)admisCount / etudiantsNotes.Count) * 100;
 
-            Console.WriteLine($"--- STATISTIQUES - CLASSE [{classeActive.NomClasse}] ---");
-            Console.WriteLine($"Moyenne générale : {moyenne:F2}/20");
-            Console.WriteLine($"Médiane des notes: {médiane:F2}/20");
-            Console.WriteLine($"Meilleure note    : {maxNote:F2}/20 ({string.Join(", ", meilleurs)})");
-            Console.WriteLine($"Plus faible note  : {minNote:F2}/20 ({string.Join(", ", moinsBons)})");
-            Console.WriteLine($"Taux de réussite  : {tauxReussite:F2}%");
+            Console.WriteLine($"Moyenne générale  : {moyenne:F2}/20");
+            Console.WriteLine($"Médiane des notes : {mediane:F2}/20");
+            Console.WriteLine($"Meilleure note     : {maxNote:F2}/20 par ({string.Join(", ", meilleurs)})");
+            Console.WriteLine($"Plus faible note   : {minNote:F2}/20 par ({string.Join(", ", moinsBons)})");
+            Console.WriteLine($"Taux de réussite   : {tauxReussite:F2}%");
+
+            PauseRetourMenu();
         }
 
-        // 8. Trier les étudiants
         static void TrierEtudiants()
         {
-            if (VérifierClasseVide()) return;
+            Console.Clear();
+            AfficherEnteteDecoratif("8. TRIER LES ÉTUDIANTS");
+
+            if (VérifierClasseVide()) { PauseRetourMenu(); return; }
 
             Console.WriteLine("1. Trier par nom (ordre alphabétique)");
             Console.WriteLine("2. Trier par note (ordre décroissant)");
-            Console.Write("Faites votre choix: ");
+            Console.Write("\nFaites votre choix: ");
             string choix = Console.ReadLine();
 
+            Console.WriteLine();
             if (choix == "1")
             {
                 classeActive.Etudiants = classeActive.Etudiants.OrderBy(e => e.Nom).ThenBy(e => e.Prenom).ToList();
-                Console.WriteLine("\nListe triée par nom :");
-                AfficherListeComplete();
+                Console.WriteLine("[✓] Tri par nom effectué :");
+                foreach (var e in classeActive.Etudiants) Console.WriteLine(e);
             }
             else if (choix == "2")
             {
                 classeActive.Etudiants = classeActive.Etudiants.OrderByDescending(e => e.Note ?? -1).ToList();
-                Console.WriteLine("\nListe triée par note décroissante :");
-                AfficherListeComplete();
+                Console.WriteLine("[✓] Tri par note décroissante effectué :");
+                foreach (var e in classeActive.Etudiants) Console.WriteLine(e);
             }
             else
             {
-                Console.WriteLine("Choix invalide.");
+                Console.WriteLine("[!] Choix invalide.");
             }
+
+            PauseRetourMenu();
         }
 
-        // 9. Supprimer un étudiant
         static void SupprimerEtudiant()
         {
-            if (VérifierClasseVide()) return;
+            Console.Clear();
+            AfficherEnteteDecoratif("9. SUPPRIMER UN ÉTUDIANT");
+
+            if (VérifierClasseVide()) { PauseRetourMenu(); return; }
 
             Console.Write("Entrez le nom ou le matricule de l'étudiant à supprimer: ");
             string recherche = Console.ReadLine()?.Trim();
@@ -346,18 +395,23 @@ namespace GestionClasse
 
             if (etudiant == null)
             {
-                Console.WriteLine("Étudiant non trouvé.");
+                Console.WriteLine("[!] Étudiant non trouvé.");
+                PauseRetourMenu();
                 return;
             }
 
             classeActive.Etudiants.Remove(etudiant);
-            Console.WriteLine($"L'étudiant {etudiant.Prenom} {etudiant.Nom} a été supprimé.");
+            Console.WriteLine($"[✓] L'étudiant {etudiant.Prenom} {etudiant.Nom} ({etudiant.Matricule}) a été supprimé.");
+
+            PauseRetourMenu();
         }
 
-        // 10. BONUS : Exporter les admis dans un fichier texte
         static void ExporterAdmis()
         {
-            if (VérifierClasseVide()) return;
+            Console.Clear();
+            AfficherEnteteDecoratif("10. EXPORTER LES ADMIS");
+
+            if (VérifierClasseVide()) { PauseRetourMenu(); return; }
 
             var admis = classeActive.Etudiants.Where(e => e.Note.HasValue && e.Note.Value >= 10).ToList();
             string cheminFichier = $"Admis_{classeActive.NomClasse}.txt";
@@ -373,17 +427,21 @@ namespace GestionClasse
                 }
             }
 
-            Console.WriteLine($"Exportation réussie ! Fichier enregistré sous : {Path.GetFullPath(cheminFichier)}");
+            Console.WriteLine($"[✓] Fichier généré avec succès !");
+            Console.WriteLine($"Emplacement : {Path.GetFullPath(cheminFichier)}");
+
+            PauseRetourMenu();
         }
 
-        // 11. BONUS : Gérer et basculer entre plusieurs classes
         static void GererClasses()
         {
-            Console.WriteLine("--- GESTION DES CLASSES ---");
-            Console.WriteLine($"Classe courante : [{classeActive.NomClasse}]");
+            Console.Clear();
+            AfficherEnteteDecoratif("11. GÉRER / CHANGER DE CLASSE");
+
+            Console.WriteLine($"Classe actuelle : [{classeActive.NomClasse}]\n");
             Console.WriteLine("1. Changer de classe active");
             Console.WriteLine("2. Créer une nouvelle classe");
-            Console.Write("Votre choix: ");
+            Console.Write("\nVotre choix: ");
             string choix = Console.ReadLine();
 
             if (choix == "1")
@@ -391,38 +449,37 @@ namespace GestionClasse
                 Console.WriteLine("\nClasses disponibles :");
                 for (int i = 0; i < listeClasses.Count; i++)
                 {
-                    Console.WriteLine($"{i + 1}. {listeClasses[i].NomClasse} ({listeClasses[i].Etudiants.Count} étudiants)");
+                    Console.WriteLine($" {i + 1}. {listeClasses[i].NomClasse} ({listeClasses[i].Etudiants.Count} étudiants)");
                 }
-                int num = SaisirEntierPositif("Sélectionnez le numéro de la classe: ");
+                int num = SaisirEntierPositif("\nSélectionnez le numéro de la classe: ");
                 if (num >= 1 && num <= listeClasses.Count)
                 {
                     classeActive = listeClasses[num - 1];
-                    Console.WriteLine($"Vous travaillez maintenant sur la classe [{classeActive.NomClasse}].");
+                    Console.WriteLine($"[✓] Vous travaillez maintenant sur la classe [{classeActive.NomClasse}].");
                 }
                 else
                 {
-                    Console.WriteLine("Numéro de classe invalide.");
+                    Console.WriteLine("[!] Numéro invalide.");
                 }
             }
             else if (choix == "2")
             {
-                Console.Write("Entrez le nom de la nouvelle classe (ex: 3A, L2): ");
+                Console.Write("\nEntrez le nom de la nouvelle classe: ");
                 string nouveauNom = Console.ReadLine()?.Trim();
                 if (!string.IsNullOrWhiteSpace(nouveauNom))
                 {
                     Classe nouvelleClasse = new Classe(nouveauNom);
                     listeClasses.Add(nouvelleClasse);
                     classeActive = nouvelleClasse;
-                    Console.WriteLine($"Classe [{nouveauNom}] créée et sélectionnée !");
+                    Console.WriteLine($"[✓] Classe [{nouveauNom}] créée et sélectionnée !");
                 }
             }
+
+            PauseRetourMenu();
         }
 
-        // ==========================================
-        // MÉTHODES UTILITAIRES ET LOGIQUE MATIÈRE
-        // ==========================================
+        // --- OUTILS COMPLÉMENTAIRES ---
 
-        // Calcul mathématique de la médiane
         static double CalculerMediane(List<double> notes)
         {
             var notesTriees = notes.OrderBy(n => n).ToList();
@@ -431,17 +488,14 @@ namespace GestionClasse
             {
                 return (notesTriees[(count / 2) - 1] + notesTriees[count / 2]) / 2.0;
             }
-            else
-            {
-                return notesTriees[count / 2];
-            }
+            return notesTriees[count / 2];
         }
 
         static bool VérifierClasseVide()
         {
             if (classeActive.Etudiants.Count == 0)
             {
-                Console.WriteLine($"La classe [{classeActive.NomClasse}] ne contient aucun étudiant pour le moment.");
+                Console.WriteLine($"La classe [{classeActive.NomClasse}] ne contient aucun étudiant.");
                 return true;
             }
             return false;
@@ -470,7 +524,7 @@ namespace GestionClasse
             {
                 Console.Write(message);
                 if (int.TryParse(Console.ReadLine(), out val) && val > 0) return val;
-                Console.WriteLine("Saisie invalide. Veuillez entrer un nombre entier positif.");
+                Console.WriteLine("[!] Saisie invalide. Veuillez entrer un nombre entier positif.");
             }
         }
     }
