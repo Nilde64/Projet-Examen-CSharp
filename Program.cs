@@ -122,11 +122,8 @@ namespace GestionClasse
             }
         }
 
-        // --- DECORATION ET NAVIGATION ---
-
         static void AfficherEnteteDecoratif(string titre)
         {
-            // Remplacé ConsoleColor.Yellow par ConsoleColor.Magenta (Rose)
             Console.ForegroundColor = ConsoleColor.Magenta;
             Console.WriteLine("===================================================================");
             Console.WriteLine($"                     {titre.ToUpper()}");
@@ -144,8 +141,6 @@ namespace GestionClasse
             Console.ResetColor();
             Console.ReadKey(true);
         }
-
-        // --- FONCTIONNALITÉS ---
 
         static void SaisirEtudiants()
         {
@@ -312,7 +307,7 @@ namespace GestionClasse
 
             PauseRetourMenu();
         }
-        
+
         static void AfficherStatistiques()
         {
             Console.Clear();
@@ -477,8 +472,6 @@ namespace GestionClasse
 
             PauseRetourMenu();
         }
-
-        // --- OUTILS COMPLÉMENTAIRES ---
 
         static double CalculerMediane(List<double> notes)
         {
